@@ -11,7 +11,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 // --- KONFIGURASI URL ---
-// Ganti dengan URL ngrok atau URL publik backend kamu
+// Ganti dengan URL yang udah di hosting nantinya
 const WEBVIEW_URL = 'http://10.10.152.93:8000'; 
 
 export default function RootLayout() {
