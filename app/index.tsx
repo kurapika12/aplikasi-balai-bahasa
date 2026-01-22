@@ -1,62 +1,94 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  ActivityIndicator, 
-  BackHandler, 
-  Platform 
-} from 'react-native';
-import { WebView } from 'react-native-webview';
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  ActivityIndicator,
+  BackHandler,
+  Platform,
+  StyleSheet,
+  View,
+} from "react-native";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { WebView } from "react-native-webview";
 
-// --- KONFIGURASI URL ---
-// Ganti dengan URL yang udah di hosting nantinya
-const WEBVIEW_URL = 'http://10.36.77.61:8000'; 
+/**
+ * =========================
+ * KONFIGURASI URL
+ * =========================
+ * DEV LOKAL:
+ *   http://10.36.77.61:8000
+ *
+ * NGROK (REKOMENDASI):
+ *   https://xxxx.ngrok-free.dev
+ */
+const WEBVIEW_URL = "https://semirespectable-herta-unloafing.ngrok-free.dev";
 
 export default function RootLayout() {
   const webViewRef = useRef<WebView>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [canGoBack, setCanGoBack] = useState(false);
 
-  // Handle tombol Back di Android
+  // Handle tombol Back Android
   useEffect(() => {
-    if (Platform.OS === 'android') {
+    if (Platform.OS === "android") {
       const onBackPress = () => {
         if (webViewRef.current && canGoBack) {
           webViewRef.current.goBack();
-          return true; // mencegah aplikasi keluar
+          return true;
         }
-        return false; // biarkan aplikasi keluar jika tidak ada history
+        return false;
       };
 
-      const subscription = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      const subscription = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress,
+      );
+
       return () => subscription.remove();
     }
   }, [canGoBack]);
 
   return (
     <SafeAreaProvider>
-      {/* SafeAreaView menjaga area status bar */}
-      <SafeAreaView style={styles.safeArea} edges={['top']}>
-        {/* StatusBar dengan ikon gelap dan background putih */}
+      <SafeAreaView style={styles.safeArea} edges={["top"]}>
         <StatusBar style="dark" backgroundColor="#ffffff" />
 
         <View style={styles.container}>
           <WebView
             ref={webViewRef}
-            source={{ uri: WEBVIEW_URL }}
+            source={{
+              uri: WEBVIEW_URL, // WAJIB HTTPS (URL ngrok)
+              headers: {
+                // Menghilangkan halaman warning ngrok
+                "ngrok-skip-browser-warning": "true",
+              },
+            }}
             style={styles.webview}
+
+            /* === WAJIB UNTUK ANDROID WEBVIEW === */
+            javaScriptEnabled={true}
+            domStorageEnabled={true}
+            mixedContentMode="always"          // ⬅️ KUNCI gambar tidak muncul
+            originWhitelist={["*"]}
+            allowsInlineMediaPlayback={true}
+
+            /* === USER AGENT (NGROK + WEBVIEW ISSUE) === */
+            userAgent="Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 Chrome/120.0 Mobile Safari/537.36"
+
+            /* === LOADING & NAVIGATION === */
             onLoadStart={() => setIsLoading(true)}
             onLoadEnd={() => setIsLoading(false)}
-            onNavigationStateChange={(navState) => setCanGoBack(navState.canGoBack)}
-            domStorageEnabled
-            javaScriptEnabled
-            startInLoadingState
-            renderLoading={() => <View />} // kosong, karena kita handle loading sendiri
-          />
+            onNavigationStateChange={(navState) =>
+              setCanGoBack(navState.canGoBack)
+            }
 
-          {/* Custom Loading Spinner */}
+            startInLoadingState
+            renderLoading={() => <View />}
+
+            /* === DEBUG ERROR === */
+            onError={(e) => {
+              console.log("WebView error:", e.nativeEvent);
+            }}
+          />
           {isLoading && (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="large" color="#0000ff" />
@@ -71,21 +103,21 @@ export default function RootLayout() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff', // background di belakang status bar
+    backgroundColor: "#fff",
   },
   container: {
     flex: 1,
-    position: 'relative', 
-    backgroundColor: '#fff',
+    position: "relative",
+    backgroundColor: "#fff",
   },
   webview: {
     flex: 1,
   },
   loadingContainer: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#fff', // memastikan spinner muncul di atas WebView
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#fff",
+    justifyContent: "center",
+    alignItems: "center",
     zIndex: 1,
   },
 });

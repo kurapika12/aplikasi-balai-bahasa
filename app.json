@@ -12,7 +12,8 @@
       "supportsTablet": true
     },
     "android": {
-      "usesCleartextTraffic": true,
+        "permissions": ["INTERNET"],
+        "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/logo.jpg",
         "backgroundColor": "#ffffff"
