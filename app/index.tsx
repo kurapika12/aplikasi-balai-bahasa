@@ -15,12 +15,9 @@ import { WebView } from "react-native-webview";
  * KONFIGURASI URL
  * =========================
  * DEV LOKAL:
- *   http://10.36.77.61:8000
- *
- * NGROK (REKOMENDASI):
- *   https://xxxx.ngrok-free.dev
+ *   http://10.10.152.110:8000
  */
-const WEBVIEW_URL = "https://semirespectable-herta-unloafing.ngrok-free.dev";
+const WEBVIEW_URL = "http://10.10.152.110:8000";
 
 export default function RootLayout() {
   const webViewRef = useRef<WebView>(null);
