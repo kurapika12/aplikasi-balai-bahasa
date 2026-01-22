@@ -12,7 +12,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 // --- KONFIGURASI URL ---
 // Ganti dengan URL yang udah di hosting nantinya
-const WEBVIEW_URL = 'http://10.10.152.93:8000'; 
+const WEBVIEW_URL = 'http://10.36.77.61:8000'; 
 
 export default function RootLayout() {
   const webViewRef = useRef<WebView>(null);
