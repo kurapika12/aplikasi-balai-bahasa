@@ -17,7 +17,7 @@ import { WebView } from "react-native-webview";
  * DEV LOKAL:
  *   http://10.10.152.110:8000
  */
-const WEBVIEW_URL = "http://10.10.152.95:8000";
+const WEBVIEW_URL = "http://10.10.152.84:8000";
 
 export default function RootLayout() {
   const webViewRef = useRef<WebView>(null);
